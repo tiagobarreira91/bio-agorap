@@ -1,0 +1,3 @@
+# Cloudflare Pages / Netlify redirects
+# Redireciona tudo para index.html (SPA fallback — não necessário aqui, mas boa prática)
+# /* /index.html 200
