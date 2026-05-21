@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════
 # Ágora Perene — bio.agorap.org
-# Hostinger / Apache
+# Hostinger / LiteSpeed
 # ═══════════════════════════════════════════
 
 Options -Indexes
@@ -22,13 +22,12 @@ RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
 # ─── Cache de assets estáticos ───
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css             "access plus 1 month"
+  ExpiresByType text/css               "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
-  ExpiresByType image/svg+xml        "access plus 1 month"
-  ExpiresByType image/webp           "access plus 1 month"
-  ExpiresByType image/jpeg           "access plus 1 month"
-  ExpiresByType image/png            "access plus 1 month"
-  ExpiresByType text/html            "access plus 10 minutes"
+  ExpiresByType image/svg+xml          "access plus 1 month"
+  ExpiresByType image/png              "access plus 1 month"
+  ExpiresByType image/jpeg             "access plus 1 month"
+  ExpiresByType text/html              "access plus 10 minutes"
 </IfModule>
 
 # ─── Headers de segurança ───
@@ -37,27 +36,17 @@ RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
-
-  # CSP — permite apenas fontes necessárias e as 3 APIs WP
-  Header always set Content-Security-Policy "\
-    default-src 'self'; \
-    script-src 'self'; \
-    style-src 'self' https://fonts.googleapis.com; \
-    font-src 'self' https://fonts.gstatic.com; \
-    img-src 'self' data: https://ensino.agorap.org https://revista.agorap.org https://agorap.org https://*.wp.com https://*.wordpress.com https://secure.gravatar.com; \
-    connect-src 'self' https://ensino.agorap.org https://revista.agorap.org https://agorap.org; \
-    frame-ancestors 'none';"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://ensino.agorap.org https://revista.agorap.org https://agorap.org https://*.wp.com https://secure.gravatar.com; connect-src 'self' https://ensino.agorap.org https://revista.agorap.org https://agorap.org; frame-ancestors 'none';"
 </IfModule>
 
-# ─── Proteger arquivos sensíveis ───
+# ─── Proteger arquivos ocultos ───
 <FilesMatch "^\.">
-  Order allow,deny
-  Deny from all
+  Require all denied
 </FilesMatch>
 
-# ─── CORS para preflight (necessário para as chamadas API) ───
+# ─── Cache de assets com hash ───
 <IfModule mod_headers.c>
-  <FilesMatch "\.(js|css)$">
-    Header set Cache-Control "public, max-age=2592000, immutable"
+  <FilesMatch "\.(css|js|svg|png|jpg|jpeg|webp|woff2)$">
+    Header set Cache-Control "public, max-age=2592000"
   </FilesMatch>
 </IfModule>
